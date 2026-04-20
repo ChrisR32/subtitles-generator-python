@@ -23,7 +23,7 @@ Install the required package:
 
 ## Files
 
-- `your_notebook.ipynb` — the notebook that generates subtitles
+- `gen_subs.ipynb` — the notebook that generates subtitles
 - `my_video.mp4` — the input video file
 - `my_video.srt` — the generated subtitle file
 
