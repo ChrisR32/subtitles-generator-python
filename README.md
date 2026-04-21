@@ -1,109 +1,113 @@
-# Video Subtitle Generator Notebook
+# Subtitle Tools Notebook Collection
 
-This notebook generates `.srt` subtitle files from a video using the `faster-whisper` library.
+This repository contains a small set of Jupyter notebooks for generating, translating, and burning subtitles onto video files.
+
+## Repository Structure
+
+```text
+.
+├── burn_subs.ipynb
+├── gen_subs.ipynb
+├── README.md
+└── subs_language_convert.ipynb
+```
 
 ## Overview
 
-The notebook:
+These notebooks are designed to work as a simple subtitle workflow.
 
-- loads a video file
-- transcribes the spoken audio
-- formats the output into subtitle timestamps
-- saves the result as an `.srt` subtitle file
+### `gen_subs.ipynb`
+This notebook is used to generate subtitle files from a video.
 
-This version is designed to be run in a Jupyter notebook from top to bottom.
+It is used to:
+- load a video file
+- transcribe spoken audio
+- auto-detect or set the language
+- save subtitles as an `.srt` file
+
+Typical use:
+- generate French subtitles from a French video
+- generate English subtitles from an English video
+- create the base subtitle file before translation
+
+### `subs_language_convert.ipynb`
+This notebook is used to translate an existing subtitle file from one language to another.
+
+It is used to:
+- load an existing `.srt` file
+- keep subtitle numbering and timestamps unchanged
+- translate only the subtitle text
+- save a new translated subtitle file
+
+Typical use:
+- convert French subtitles to English
+- preserve subtitle timing while changing language
+
+### `burn_subs.ipynb`
+This notebook is used to burn subtitles directly into a video file.
+
+It is used to:
+- load a video file
+- load an `.srt` subtitle file
+- embed subtitles onto the video image
+- export a new video file with hardcoded subtitles
+
+Typical use:
+- create a final video with subtitles permanently shown on screen
+
+## Example Workflow
+
+A common workflow for this repository is:
+
+1. Use `gen_subs.ipynb` to generate subtitles from the original video.
+2. Use `subs_language_convert.ipynb` to translate the subtitle file if needed.
+3. Use `burn_subs.ipynb` to embed the subtitles into the final video.
 
 ## Requirements
 
-Install the required package:
+Depending on the notebook, this project may use:
 
-```python
-!pip install faster-whisper
-```
-
-## Files
-
-- `gen_subs.ipynb` — the notebook that generates subtitles
-- `my_video.mp4` — the input video file
-- `my_video.srt` — the generated subtitle file
-
-## How to Run
-
-1. Open the notebook in Jupyter.
-2. Run the install cell:
-
-   ```python
-   !pip install faster-whisper
-   ```
-
-3. Run the cells that define the helper functions and subtitle generation function.
-4. Set your video path:
-
-   ```python
-   video_path = "my_video.mp4"
-   ```
-
-5. Run the transcription cell:
-
-   ```python
-   output_file = generate_subtitles(
-       video_path=video_path,
-       model_size="small",
-       language=None,
-       device="cpu",
-       compute_type="int8"
-   )
-   ```
-
-6. The notebook will create an `.srt` file in the same location as the video unless another output path is provided.
+- `faster-whisper`
+- `deep-translator`
+- `ffmpeg`
+- `pandas`
+- `matplotlib`
+- standard Python libraries such as `pathlib` and `subprocess`
 
 ## Notes on Code Sources
 
-This notebook uses the `faster-whisper` Python library for speech-to-text transcription.
+These notebooks combine custom notebook code with external Python libraries.
 
-### Source attribution
+### External libraries used
+- `faster-whisper` for subtitle generation from video/audio
+- `deep-translator` for subtitle text translation
+- `ffmpeg` for burning subtitles into video
 
-- The overall notebook structure, helper functions, and `.srt` writing logic were custom-written for this project.
-- The transcription approach is based on the public usage pattern of the `faster-whisper` library, specifically use of:
-  - `WhisperModel(...)`
-  - `model.transcribe(...)`
+### Authorship note
+- The notebook structure and workflow code were written for this project.
+- External library calls are based on the public documentation and normal usage patterns of those libraries.
+- Comments should be included in the notebooks to make clear where external libraries are being used.
 
-## Model Options
-
-You can change the model size depending on speed vs accuracy:
-
-- `tiny` — fastest
-- `small` — good balance
-- `medium` — better accuracy
-- `large-v3` — highest accuracy, slower
-
-Example:
+## Example comment style for notebook cells
 
 ```python
-model_size="medium"
+# external library used for speech-to-text transcription
+from faster_whisper import WhisperModel
+
+# uses faster-whisper api to generate subtitle segments
+segments, info = model.transcribe(str(video_file), language=language, beam_size=5)
 ```
 
-## Output
-
-The output is a standard SubRip subtitle file:
-
-```text
-1
-00:00:00,000 --> 00:00:02,500
-hello and welcome
-
-2
-00:00:02,500 --> 00:00:05,000
-this video demonstrates subtitle generation
+```python
+# external library used for subtitle text translation
+from deep_translator import GoogleTranslator
 ```
 
-## Disclaimer
+```python
+# ffmpeg is called from python to burn subtitles into the final video
+import subprocess
+```
 
-The transcription quality depends on:
+## Simple Summary
 
-- audio clarity
-- speaker accents
-- background noise
-- selected model size
-
-Subtitles may need minor manual correction after generation.
+This repository is a small subtitle toolkit made up of Jupyter notebooks. It can generate subtitle files from video, translate subtitle files between languages, and burn subtitles directly onto videos.
